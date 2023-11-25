@@ -10,7 +10,7 @@ export class CatController {
     constructor(private catService: CatService) { };
     // request >> middleware >> guard >> interceptor >> response
     @Get()  // localhost:3000/cat
-    @UseGuards(AuthGuard)
+    // @UseGuards(AuthGuard)
     getAllCat() {
         console.log('Second');   
         return this.catService.findAllCat();

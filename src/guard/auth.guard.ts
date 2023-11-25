@@ -1,12 +1,44 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, ForbiddenException, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  canActivate(
+  constructor(private jwtService: JwtService, private userService: UserService) { }
+  async canActivate(
     context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
-    const request = context.switchToHttp().getRequest();
-    return false;
+  ): Promise<boolean> {
+   
+    try {
+      const request = context.switchToHttp().getRequest();
+
+      // get token from header
+      const token = request.headers.authorization.split(' ')[1];
+      // jwtVerify
+      if (!token) {
+        throw new ForbiddenException('Please provide access token');
+  
+      }
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: process.env.JWT_SECRET,
+      });
+      // jwtVerify validate token
+      console.log(payload);
+      const user = await this.userService.findByEmail(payload.email);
+      console.log(user)
+      if (!user) {
+        throw new BadRequestException(
+          'User not belong to token, please try again'
+        );
+      }
+      // Assign user to request object
+      request.currentUser = user;
+      
+    } catch (error) {
+      console.log('error from auth guard', error);
+      throw new ForbiddenException('Invalid token or exprired')
+    }
+    return true;
   }
 }
