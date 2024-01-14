@@ -4,10 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { Cat } from './cat/cat.entity';
-import { CatModule } from './cat/cat.module';
-import { User } from './user/user.entity';
-import { UserModule } from './user/user.module';
+import { Cat } from './cats/cat.entity';
+import { CatModule } from './cats/cat.module';
+import { User } from './users/user.entity';
+import { UserModule } from './users/user.module';
+import { PostModule } from './posts/post.module';
 @Module({
   imports: [
     // TypeOrmModule.forRoot({
@@ -44,8 +45,9 @@ import { UserModule } from './user/user.module';
     }),
     CatModule,
     UserModule,
+    PostModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController,],
   providers: [AppService],
 })
 export class AppModule { }

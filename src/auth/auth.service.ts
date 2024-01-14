@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { LoginUserDTO, RegisterUserDTO } from "src/user/dto/user.dto";
-import { UserService } from "src/user/user.service";
+import { LoginUserDTO, RegisterUserDTO } from "src/users/dto/user.dto";
+import { UserService } from "src/users/user.service";
 import * as bcrypt from 'bcrypt';
 
 
@@ -33,7 +33,6 @@ export class AuthService {
         const access_token = await this.jwtService.signAsync(payload, {
             secret: process.env.JWT_SECRET,
         });
-        console.log(access_token)
         return {
             msg: 'User has been registed!',
             access_token,
@@ -61,10 +60,10 @@ export class AuthService {
         const access_token = await this.jwtService.signAsync(payload, {
             secret: process.env.JWT_SECRET,
         });
-        console.log(access_token)
         return {
             msg: 'User has been login succesfully',
             access_token,
         }
     }
+  
 }
